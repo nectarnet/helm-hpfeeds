@@ -19,6 +19,7 @@ spec:
     {{- end }}
       labels:
         {{- include "hpfeeds-helm.selectorLabels" . | nindent 8 }}
+        app: hpfeeds
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -37,20 +38,20 @@ spec:
           command:
             - '/app/bin/hpfeeds-broker'
             - '--auth="mongodb://{{ .Values.mongodb.auth.username}}:{{ .Values.mongodb.auth.password}}@mongodb:{{ .Values.mongodb.service.port}}/{{ .Values.mongodb.auth.database}}"'
-            - '--endpoint=tcp:port=20000'
+            - '--endpoint=tcp:port={{ .Values.service.port }}'
           {{- end }}
           ports:
             - name: http
-              containerPort: 20000
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
             tcpSocket:
-              port: 20000
+              port: {{ .Values.service.port }}
             initialDelaySeconds: 15
             periodSeconds: 20
           readinessProbe:
             tcpSocket:
-              port: 20000
+              port: {{ .Values.service.port }}
             initialDelaySeconds: 15
             periodSeconds: 20
           resources:

@@ -45,8 +45,9 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+#I've only been able to get it working with no ingress and a LoadBalancer Type
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 20000
 
 ingress:

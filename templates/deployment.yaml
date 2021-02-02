@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "hpfeeds-helm.fullname" . }}
-  namespace: {{ .Values.namespace }}
   labels:
     {{- include "hpfeeds-helm.labels" . | nindent 4 }}
 spec:
@@ -34,6 +33,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.mongodb.enabled }}
+          command:
+            - '/app/bin/hpfeeds-broker'
+            - '--auth="mongodb://{{ .Values.mongodb.auth.username}}:{{ .Values.mongodb.auth.password}}@mongodb:{{ .Values.mongodb.service.port}}/{{ .Values.mongodb.auth.database}}"'
+            - '--endpoint=tcp:port=20000'
+          {{- end }}
           ports:
             - name: http
               containerPort: 20000

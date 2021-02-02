@@ -3,7 +3,6 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-namespace: hpfeeds
 image:
   repository: hpfeeds/hpfeeds-broker
   pullPolicy: IfNotPresent
@@ -15,7 +14,14 @@ nameOverride: ""
 fullnameOverride: ""
 
 mongodb:
-  enabled: false
+  enabled: true
+  auth:
+    username: hpfeeds
+    password: hpfeeds
+    database: hpfeeds
+  service:
+    port: 27017
+
 
 serviceAccount:
   # Specifies whether a service account should be created
